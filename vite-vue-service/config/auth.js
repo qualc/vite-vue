@@ -1,0 +1,1 @@
+exports.whiteList = ["/user/login"];

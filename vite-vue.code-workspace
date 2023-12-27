@@ -1,0 +1,13 @@
+{
+  "folders": [
+	{
+		"path": "vite-vue-web"
+	},
+	{
+		"path": "vite-vue-service"
+	}
+],
+  "settings": {
+    "cSpell.words": ["pinia"]
+  }
+}

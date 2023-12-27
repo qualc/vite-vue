@@ -1,0 +1,64 @@
+[
+  {
+    "id": 1,
+    "name": "用户管理",
+    "path": "/user",
+    "level": 1,
+    "type": "menu",
+    "parentId": 0,
+    "sort": 1
+  },
+  {
+    "id": 2,
+    "name": "用户列表",
+    "path": "/user/list",
+    "level": 2,
+    "type": "menu",
+    "parentId": 1,
+    "sort": 1
+  },
+  {
+    "id": 3,
+    "name": "菜单列表",
+    "path": "/user/menu",
+    "level": 2,
+    "type": "menu",
+    "parentId": 1,
+    "sort": 2
+  },
+  {
+    "id": 4,
+    "name": "组件管理",
+    "path": "/component",
+    "level": 1,
+    "type": "menu",
+    "parentId": 0,
+    "sort": 2
+  },
+  {
+    "id": 5,
+    "name": "基础组件",
+    "path": "/component/basic",
+    "level": 2,
+    "type": "menu",
+    "parentId": 4,
+    "sort": 1
+  },
+  {
+    "id": 6,
+    "name": "配置组件",
+    "path": "/component/config",
+    "level": 2,
+    "type": "menu",
+    "parentId": 4,
+    "sort": 2
+  },
+  {
+    "id": 7,
+    "name": "测试按钮",
+    "level": 3,
+    "type": "button",
+    "parentId": 6,
+    "sort": 1
+  }
+]
