@@ -17,6 +17,7 @@
       </template>
       <template #default="scope" v-if="!item.type">
         <template v-if="item.slot">
+          {{ item.slot }}
           <slot :name="item.slot" :row="scope.row" :$index="scope.$index" />
         </template>
         <template v-else>
@@ -28,7 +29,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, useSlots } from 'vue';
 import { ITableColumn, ITableConfig } from '.';
 
 const props = defineProps<{
@@ -48,6 +49,10 @@ const defaultConfig = ref<ITableConfig>({
   border: true,
   stripe: true,
 });
+
+const slots = useSlots();
+console.log(`slots2`);
+console.log(slots);
 
 const format = (scope: any, item: ITableColumn) => {
   return scope.row[item.props!] || item.props;

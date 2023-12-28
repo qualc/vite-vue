@@ -25,6 +25,7 @@ declare module 'vue' {
     RouterView: typeof import('vue-router')['RouterView']
     Src: typeof import('./../src/components/CSearch/src/index.tsx')['default']
     Type: typeof import('./../src/components/CSearch/type.ts')['default']
+    UsePagination: typeof import('./../src/components/CTable/usePagination.ts')['default']
     UseSearch: typeof import('./../src/components/CSearch/useSearch.ts')['default']
     UseTable: typeof import('./../src/components/CTable/useTable.ts')['default']
   }

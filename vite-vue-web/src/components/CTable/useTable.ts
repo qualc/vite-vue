@@ -1,46 +1,31 @@
 import { IPaging } from '@/utils/http/types';
 import { ref } from 'vue';
+import usePagination from './usePagination';
 
 export default (
   loadFn: (current: number, size: number) => Promise<IPaging<any>>,
 ) => {
+  const [pagination, onChangePage] = usePagination(() => onLoad());
+
   const loading = ref(false);
-  const current = ref(1);
-  const size = ref(10);
-  const total = ref(0);
   const list = ref<any[]>([]);
 
   const onLoad = async () => {
     loading.value = true;
-    const res = await loadFn(current.value, size.value);
+    const res = await loadFn(pagination.current, pagination.size);
     list.value = res.list;
-    total.value = res.total;
+    pagination.total = res.total;
     loading.value = false;
   };
 
-  const onChangePage = async (currentValue: number) => {
-    current.value = currentValue;
-    onLoad();
-  };
-  const onChangeSize = async (currentValue: number) => {
-    size.value = currentValue;
-    onLoad();
-  };
   const onSearch = () => {
-    console.log('##### onSearch');
-    current.value = 1;
-    onLoad();
+    onChangePage(1);
   };
 
   return {
-    loading,
-    current,
-    size,
-    total,
     list,
-
-    onChangePage,
-    onChangeSize,
+    loading,
     onSearch,
+    pagination,
   };
 };
