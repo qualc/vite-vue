@@ -7,26 +7,24 @@
     ></c-search>
   </div>
   <div class="table" v-loading="loading">
-    <c-table :config="props.config" :data="list"> </c-table>
-    <template v-for="item in props.config.columns">
-      <div v-if="item.slot" :slot="item.slot">
-        {{ item.slot }}
-        <slot :name="item.slot"></slot>
-      </div>
-    </template>
+    <c-table :config="props.config" :data="list">
+      <template v-for="slot in slots" v-slot:[slot]="scope">
+        <slot :name="slot" :row="scope.row" :$index="scope.$index" />
+      </template>
+    </c-table>
   </div>
   <div class="pagination">
     <el-pagination
+      v-model::current-page="pagination.current"
       layout="prev, pager, next"
       :total="pagination.total"
       :page-size="pagination.size"
-      v-model::current-page="pagination.current"
       @update:current-page="pagination.onChangePage"
     />
   </div>
 </template>
 <script setup lang="ts">
-import { onMounted, unref, useSlots } from 'vue';
+import { onMounted, ref, unref, useSlots } from 'vue';
 import useTable from '../CTable/useTable';
 import useSearch from '../CSearch/useSearch';
 import { ITableConfig } from '../CTable';
@@ -49,13 +47,11 @@ const { loading, list, onSearch, pagination } = useTable(load);
 
 const { searchForm } = useSearch(props.search);
 
+const slots = ref(Object.keys(useSlots()));
+
 onMounted(() => {
   onSearch();
-  console.log(props.config);
 });
-const slots = useSlots();
-console.log(`slots`);
-console.log(slots);
 </script>
 
 <style lang="scss" scoped>

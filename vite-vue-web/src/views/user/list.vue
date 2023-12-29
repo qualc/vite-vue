@@ -46,6 +46,7 @@ const search = ref<ISearchConfig>([
 
 const handleCreate = () => {};
 const handleEdit = (row: IUserInfo) => {
+  console.log(row);
   console.log(row.id, row.username);
 };
 const handleDelete = (row: IUserInfo) => {

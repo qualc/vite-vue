@@ -17,7 +17,6 @@
       </template>
       <template #default="scope" v-if="!item.type">
         <template v-if="item.slot">
-          {{ item.slot }}
           <slot :name="item.slot" :row="scope.row" :$index="scope.$index" />
         </template>
         <template v-else>
