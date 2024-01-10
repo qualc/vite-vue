@@ -1,1 +1,0 @@
-exports.whiteList = ["/user/login"];
