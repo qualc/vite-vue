@@ -14,7 +14,7 @@ export default (
     loading.value = true;
     const res = await loadFn(pagination.current, pagination.size);
     list.value = res.list;
-    pagination.total = res.total;
+    pagination.total = res.total || list.value.length;
     loading.value = false;
   };
 

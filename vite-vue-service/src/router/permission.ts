@@ -1,12 +1,14 @@
 import express from "express";
 import menuDb from "../db/menu";
-import { get } from "../redis/set";
+import { getUserRedis } from "@/redis/user";
 
 const router = express.Router();
 
 router.get("/menu", function (req, res) {
   const token = req.headers?.authorization?.replace("Bearer ", "");
-  const user = get(`user:token:${token}`);
-  res.send(menuDb.getMenuListByUserId(user.id));
+  const user = getUserRedis().getUserInfo(token!);
+  res.send({
+    list: user ? menuDb.getMenuListByUserId(user.id) : [],
+  });
 });
 export default router;

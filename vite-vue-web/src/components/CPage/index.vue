@@ -44,13 +44,18 @@ const load = async (current: number, size: number) => {
 };
 
 const { loading, list, onSearch, pagination } = useTable(load);
-
 const { searchForm } = useSearch(props.search);
 
 const slots = ref(Object.keys(useSlots()));
 
 onMounted(() => {
   onSearch();
+});
+
+defineExpose({
+  refresh() {
+    onSearch();
+  },
 });
 </script>
 

@@ -22,7 +22,7 @@ export const getUserInfo = (id: number) => {
 };
 
 export const getUserList = (body: VPagination<IUserListBody>) => {
-  return http.post<VPagination<IUserListBody>, IPaging<IUserInfo>>(
+  return http.get<VPagination<IUserListBody>, IPaging<IUserInfo>>(
     `/user`,
     body,
   );

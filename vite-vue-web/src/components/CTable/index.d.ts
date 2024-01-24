@@ -9,11 +9,22 @@ export interface ITableColumn {
   fixed?: string | boolean;
   type?: ITableType;
   align?: ITableAlign;
+  formatter?:
+    | ((value: any, row: any, index: number) => any)
+    | Record<string | number | boolean, any>; // 格式化函数
 }
 
-export interface ITableConfig {
+type ITableConfigTree = {
+  defaultExpandAll?: boolean;
+  rowKey?: string;
+};
+export type ITableConfig = {
   columns: ITableColumn[];
   align?: ITableAlign;
   border?: boolean;
   stripe?: boolean;
+} & ITableConfigTree;
+
+export interface CTableInstance {
+  refresh: () => void;
 }

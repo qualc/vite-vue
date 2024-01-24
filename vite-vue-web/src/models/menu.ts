@@ -1,15 +1,16 @@
-
 export enum MenuType {
   Menu = 0,
-  Button = 1
+  Button = 1,
 }
-export interface IMenuList {
+export interface IMenuItem {
   id: number;
   level: number;
-  name:string;
+  name: string;
   parentId: number;
-  path:string;
+  parentName: string;
+  path: string;
   sort: number;
   type: MenuType;
-  children: IMenuList[];
+  children: IMenuList;
 }
+export type IMenuList = IMenuItem[];

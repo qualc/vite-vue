@@ -1,37 +1,44 @@
+import { IListCommon } from "@/model";
+import { mkdirFile } from "@/utils/directory";
 import * as fs from "fs";
 import * as path from "path";
 
 const cwd = __dirname;
 
-const createDataFile = (dir: string) => {
-  if (!fs.existsSync(dir)) {
-    fs.writeFileSync(dir, "[]");
-  }
-  return dir;
-};
-
 export default class DB<T extends { id: number }> {
-  cachePath = "";
-  data: T[] = [];
+  private cachePath = "";
+  private data: T[] = [];
+  private _lastId: number = 0;
+
   constructor(private model: string) {
     this.formatCachePath();
     this.loadData();
   }
   formatCachePath() {
-    this.cachePath = createDataFile(
+    this.cachePath = mkdirFile(
       path.join(cwd, "cache", this.model + ".json"),
+      "[]",
     );
   }
 
   loadData() {
     const data = fs.readFileSync(this.cachePath, "utf8");
-    this.data = JSON.parse(data);
+    this.data = JSON.parse(data || "[]");
   }
 
   getData(): T[] {
-    return this.data;
+    return JSON.parse(JSON.stringify(this.data));
   }
+  getDataList(params: IListCommon) {
+    const { current = 1, size = 10 } = params || {};
 
+    const list = this.getData();
+    // 条件筛选
+    return {
+      list: list.slice((current - 1) * size, current * size),
+      total: list.length,
+    };
+  }
   getDataByKey(id: number | string, key = "id"): T | null {
     const item = this.data.find((item) => (item as any)[key] === id);
     return item ? Object.assign({}, item) : null;
@@ -54,7 +61,23 @@ export default class DB<T extends { id: number }> {
     return this.data[index];
   }
 
-  setData() {
+  insertData(data: T): T | null {
+    data.id = this.nextId;
+    this.data.push(data);
+    this.setData();
+    return data;
+  }
+
+  private setData() {
     fs.writeFileSync(this.cachePath, JSON.stringify(this.data));
+  }
+
+  private get nextId(): number {
+    if (!this._lastId) {
+      this._lastId = this.data.length
+        ? Math.max(...this.data.map((item) => item.id))
+        : 0;
+    }
+    return ++this._lastId;
   }
 }

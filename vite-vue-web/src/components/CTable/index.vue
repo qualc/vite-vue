@@ -4,6 +4,7 @@
     :border="defaultConfig.border"
     :stripe="defaultConfig.stripe"
     :align="defaultConfig.align"
+    :row-key="props.config.rowKey"
   >
     <el-table-column
       v-for="(item, index) in props.config?.columns"
@@ -28,8 +29,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, useSlots } from 'vue';
+import { ref } from 'vue';
 import { ITableColumn, ITableConfig } from '.';
+import { isPlainObject } from '@/utils/valid';
 
 const props = defineProps<{
   /** 列配置 */
@@ -49,12 +51,16 @@ const defaultConfig = ref<ITableConfig>({
   stripe: true,
 });
 
-const slots = useSlots();
-console.log(`slots2`);
-console.log(slots);
+// const slots = useSlots();
 
 const format = (scope: any, item: ITableColumn) => {
-  return scope.row[item.props!] || item.props;
+  const value = scope.row[item.props!] || item.props;
+  if (item.formatter && typeof item.formatter === 'function') {
+    return item.formatter(value, scope.row, scope.$index);
+  } else if (item.formatter && isPlainObject(item.formatter)) {
+    return item.formatter[value] || value;
+  }
+  return value;
 };
 </script>
 

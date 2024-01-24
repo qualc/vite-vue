@@ -16,11 +16,11 @@
 </template>
 
 <script setup lang="ts">
-import { Setting } from "@element-plus/icons-vue";
-import { ref } from "vue";
-import { IMenuList } from "@/models/menu";
-import { useUserStore } from "@/store/modules/user";
+import { Setting } from '@element-plus/icons-vue';
+import { ref } from 'vue';
+import { IMenuList } from '@/models/menu';
+import { useUserStore } from '@/store/modules/user';
 
 const store = useUserStore();
-const menuList = ref<IMenuList[]>(store.menuList);
+const menuList = ref<IMenuList>(store.menuList);
 </script>

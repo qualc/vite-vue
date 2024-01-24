@@ -1,25 +1,24 @@
-import Axios, {
-  AxiosInstance,
-  AxiosRequestConfig,
-} from "axios";
+import Axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 import {
   HttpError,
   HttpRequestConfig,
   HttpResponse,
   RequestMethods,
   VResponse,
-} from "./types";
-import { ElMessage } from "element-plus";
+} from './types';
+import { ElMessage } from 'element-plus';
+import router from '@/router';
+import { useUserStore } from '@/store/modules/user';
 
 // 相关配置请参考：http://www.axios-js.com/zh-cn/docs/#axios-request-config-1
 const defaultConfig: AxiosRequestConfig = {
-  baseURL: "http://localhost:3000",
+  baseURL: 'http://localhost:3000',
   // 请求超时时间
   timeout: 10000,
   headers: {
-    Accept: "application/json, text/plain, */*",
-    "Content-Type": "application/json",
-    "X-Requested-With": "XMLHttpRequest",
+    Accept: 'application/json, text/plain, */*',
+    'Content-Type': 'application/json',
+    'X-Requested-With': 'XMLHttpRequest',
   },
 };
 class Http {
@@ -34,8 +33,8 @@ class Http {
   private httpInterceptorsRequest(): void {
     Http.axiosInstance.interceptors.request.use(
       async (config: HttpRequestConfig): Promise<any> => {
-        const token = localStorage.getItem("token");
-        
+        const token = localStorage.getItem('token');
+
         if (token && config.headers) {
           config.headers.Authorization = `Bearer ${token}`;
         }
@@ -69,7 +68,7 @@ class Http {
   }
 
   /** 通用请求工具函数 */
-  public request<T, P>(
+  public request<T, P = any>(
     method: RequestMethods,
     url: string,
     data?: T,
@@ -89,9 +88,12 @@ class Http {
         .then((response: VResponse<P>) => {
           if (response.code === 200) {
             resolve(response.data);
+          } else if (response.code === 401) {
+            useUserStore().clearAll();
+            router.push('/login');
           } else {
             reject(response);
-            ElMessage.error(response.msg || "请求失败");
+            ElMessage.error(response.msg || '请求失败');
           }
         })
         .catch((error) => {
@@ -101,33 +103,46 @@ class Http {
   }
 
   /** 单独抽离的post工具函数 */
-  public post<T, P>(
+  public post<T = any, P = VResponse<any>>(
     url: string,
     data?: T,
     config?: HttpRequestConfig,
   ): Promise<P> {
     return this.request<AxiosRequestConfig<T>, P>(
-      "post",
+      'post',
       url,
       { data },
       config,
     );
   }
+  /** 单独抽离的put工具函数 */
+  public put<T = any, P = VResponse<any>>(
+    url: string,
+    data?: T,
+    config?: HttpRequestConfig,
+  ): Promise<P> {
+    return this.request<AxiosRequestConfig<T>, P>('put', url, { data }, config);
+  }
 
   /** 单独抽离的get工具函数 */
-  public get<T, P = undefined>(
+  public get<T = any, P = undefined>(
     url: string,
-    params?: P extends undefined ? any: T,
+    params?: P extends undefined ? any : T,
     config?: HttpRequestConfig,
-  ): Promise<P extends undefined ? T:P> {
-    return this.request<AxiosRequestConfig, P extends undefined ? T:P>(
-      "get",
+  ): Promise<P extends undefined ? T : P> {
+    return this.request<AxiosRequestConfig, P extends undefined ? T : P>(
+      'get',
       url,
       { params },
       config,
     );
   }
+  public delete<P = VResponse<any>>(
+    url: string,
+    config?: HttpRequestConfig,
+  ): Promise<P> {
+    return this.request<AxiosRequestConfig, P>('delete', url, config);
+  }
 }
 
 export const http = new Http();
-

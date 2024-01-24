@@ -18,7 +18,9 @@ class MenuDb extends DB<Menu> {
       return [];
     }
     const menuIds = role.permission || [];
-    const menuList = this.getData().filter((item) => menuIds.includes(item.id));
+    const menuList = this.getData().filter(
+      (item) => user.roleId === 1 || menuIds.includes(item.id),
+    );
     return this.tree(menuList);
   }
 
@@ -36,6 +38,7 @@ class MenuDb extends DB<Menu> {
       }
 
       if (map[item.parentId]) {
+        item.parentName = map[item.parentId].name;
         map[item.parentId].children.push(item);
       }
     });

@@ -1,7 +1,7 @@
 import express from "express";
 import userDB from "../db/user";
-import { set } from "../redis/set";
 import { HttpCode } from "../constant/http";
+import { getUserRedis } from "@/redis/user";
 
 const router = express.Router();
 
@@ -14,7 +14,7 @@ router.post("/login", function (req, res) {
   } else {
     user.password = "";
     user.token = userDB.generateToken();
-    set(`user:token:${user.token}`, user);
+    getUserRedis().setUserInfo(user.token, user);
     res.send(user);
   }
 });
@@ -28,7 +28,7 @@ router.get("/:id", function (req, res) {
   }
 });
 
-router.post("/", function (req, res) {
+router.get("/", function (req, res) {
   const { list, total } = userDB.getUserList(req.body, ["password"]);
   const { current, size } = req.body;
   res.send({ list, total, current, size });

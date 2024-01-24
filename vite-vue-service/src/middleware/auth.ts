@@ -1,6 +1,8 @@
 import { Express } from "express";
 import { whiteList } from "../config/auth";
 import { HttpCode } from "../constant/http";
+import { getUserRedis } from "@/redis/user";
+
 export default (app: Express) => {
   app.use((req, res, next) => {
     if (whiteList.includes(req.path)) {
@@ -16,6 +18,13 @@ export default (app: Express) => {
     const token = auth.split(" ")[1];
     if (!token) {
       return res.sendError("No token provided.", HttpCode.Unauthorized);
+    }
+    const userInfo = getUserRedis().getUserInfo(token);
+    if (!userInfo) {
+      return res.sendError(
+        "No authorization header provided.",
+        HttpCode.Unauthorized,
+      );
     }
     next();
   });
